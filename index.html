@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f7f4ee;
+    --surface: #ffffff;
+    --ink: #1a1814;
+    --ink-muted: rgba(26,24,20,0.38);
+    --ink-light: rgba(26,24,20,0.1);
+    --terracotta: #b85c38;
+    --sage: #5a7a5e;
+    --navy: #2c3e50;
+    --gold: #c9a84c;
+  }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 520px;
+    width: 100%;
+  }
+  .header {
+    margin-bottom: 3rem;
+  }
+  .eyebrow {
+    font-size: 0.55rem;
+    letter-spacing: 0.25em;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    margin-bottom: 0.7rem;
+  }
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--terracotta);
+  }
+  .subtitle {
+    margin-top: 0.7rem;
+    font-size: 0.62rem;
+    color: var(--ink-muted);
+    letter-spacing: 0.06em;
+  }
+  .tools {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--ink-light);
+    border: 1px solid var(--ink-light);
+  }
+  .tool {
+    background: var(--surface);
+    padding: 1.5rem 1.6rem;
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    text-decoration: none;
+    color: var(--ink);
+    transition: background 0.18s ease;
+    opacity: 0;
+    transform: translateY(6px);
+    animation: up 0.4s ease forwards;
+  }
+  .tool:hover { background: #faf8f4; }
+  .tool:hover .tool-arrow { transform: translateX(4px); }
+  .tool-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+  .icon-rutina  { background: rgba(184,92,56,0.08); }
+  .icon-menu    { background: rgba(90,122,94,0.08); }
+  .icon-gastos  { background: rgba(201,168,76,0.1); }
+  .tool-text { flex: 1; }
+  .tool-name {
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.2rem;
+  }
+  .tool-desc {
+    font-size: 0.58rem;
+    color: var(--ink-muted);
+    letter-spacing: 0.03em;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+  }
+  .tool-arrow {
+    font-size: 0.7rem;
+    color: var(--ink-muted);
+    transition: transform 0.18s ease;
+  }
+  .footer-note {
+    margin-top: 2rem;
+    font-size: 0.53rem;
+    color: var(--ink-muted);
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+  @keyframes up { to { opacity: 1; transform: translateY(0); } }
+  .tool:nth-child(1) { animation-delay: 0.05s; }
+  .tool:nth-child(2) { animation-delay: 0.12s; }
+  .tool:nth-child(3) { animation-delay: 0.19s; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="header">
+    <div class="eyebrow">nicosianca · herramientas personales</div>
+    <h1>Daily<br><em>Tools</em></h1>
+    <p class="subtitle">Un sistema simple para vivir mejor cada día.</p>
+  </div>
+
+  <div class="tools">
+    <a class="tool" href="rutina/">
+      <div class="tool-icon icon-rutina">☀️</div>
+      <div class="tool-text">
+        <div class="tool-name">Rutina diaria</div>
+        <div class="tool-desc">Protocolo de 13 hábitos · mañana, día y noche</div>
+      </div>
+      <span class="tool-arrow">→</span>
+    </a>
+    <a class="tool" href="menu/">
+      <div class="tool-icon icon-menu">🥗</div>
+      <div class="tool-text">
+        <div class="tool-name">Menú semanal</div>
+        <div class="tool-desc">Planificación de comidas · lista de compras</div>
+      </div>
+      <span class="tool-arrow">→</span>
+    </a>
+    <a class="tool" href="gastos/">
+      <div class="tool-icon icon-gastos">💰</div>
+      <div class="tool-text">
+        <div class="tool-name">Gastos fijos</div>
+        <div class="tool-desc">Control mensual · servicios y fijos del hogar</div>
+      </div>
+      <span class="tool-arrow">→</span>
+    </a>
+  </div>
+
+  <p class="footer-note">nicosianca.github.io/Dailytools</p>
+</div>
+</body>
+</html>

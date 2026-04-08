@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rutina Diaria · Daily Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f7f4ee;
+    --surface: #ffffff;
+    --ink: #1a1814;
+    --ink-muted: rgba(26,24,20,0.38);
+    --ink-light: rgba(26,24,20,0.12);
+    --terracotta: #b85c38;
+    --terracotta-dim: rgba(184,92,56,0.1);
+    --sage: #5a7a5e;
+    --phase-border: rgba(26,24,20,0.08);
+  }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 3rem 1rem 4rem;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+  .card {
+    position: relative;
+    z-index: 1;
+    max-width: 440px;
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--ink-light);
+    box-shadow: 0 2px 4px rgba(26,24,20,0.04), 0 12px 40px rgba(26,24,20,0.07);
+    padding: 2.8rem 2.2rem 2.2rem;
+  }
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.12em;
+    color: var(--ink-muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    margin-bottom: 1.8rem;
+    transition: color 0.15s;
+  }
+  .back:hover { color: var(--ink); }
+  .header { margin-bottom: 2.4rem; padding-bottom: 1.6rem; border-bottom: 1px solid var(--ink-light); }
+  .eyebrow { font-size: 0.58rem; letter-spacing: 0.22em; color: var(--terracotta); text-transform: uppercase; margin-bottom: 0.7rem; }
+  .title { font-family: 'Cormorant Garamond', serif; font-size: 2.6rem; font-weight: 300; line-height: 1.05; }
+  .title em { font-style: italic; color: var(--terracotta); }
+  .complete-msg { display: none; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.85rem; color: var(--sage); margin-top: 1rem; }
+  .card.complete .complete-msg { display: block; }
+  .phase { margin-bottom: 1.8rem; }
+  .phase-label { font-size: 0.52rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-muted); padding: 0.6rem 0 0.5rem; border-top: 1px solid var(--phase-border); margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.6rem; }
+  .phase-label::after { content: ''; flex: 1; height: 1px; background: var(--phase-border); }
+  .phase-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+  .phase-dot.morning { background: #e8a838; }
+  .phase-dot.day { background: var(--terracotta); }
+  .phase-dot.night { background: #3a5f7a; }
+  .habits { list-style: none; }
+  .habit { display: flex; align-items: center; gap: 0.9rem; padding: 0.75rem 0.3rem; border-bottom: 1px solid var(--phase-border); cursor: pointer; transition: background 0.15s; border-radius: 2px; user-select: none; opacity: 0; transform: translateY(4px); animation: riseIn 0.35s ease forwards; }
+  .habit:last-child { border-bottom: none; }
+  .habit:hover { background: rgba(26,24,20,0.025); }
+  .habit.done .habit-name { color: var(--ink-muted); text-decoration: line-through; text-decoration-color: rgba(184,92,56,0.35); }
+  .habit.done .check { background: var(--terracotta-dim); border-color: var(--terracotta); }
+  .habit.done .check-mark { opacity: 1; }
+  .check { width: 16px; height: 16px; border: 1px solid var(--ink-light); border-radius: 2px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.18s; }
+  .check-mark { width: 7px; height: 5px; border-left: 1.5px solid var(--terracotta); border-bottom: 1.5px solid var(--terracotta); transform: rotate(-45deg) translateY(-1px); opacity: 0; transition: opacity 0.15s; }
+  .habit-icon { font-size: 0.85rem; width: 1.1rem; text-align: center; flex-shrink: 0; }
+  .habit-text { flex: 1; }
+  .habit-name { font-size: 0.75rem; color: rgba(26,24,20,0.8); letter-spacing: 0.02em; transition: color 0.18s; line-height: 1.3; }
+  .habit-sub { font-size: 0.58rem; color: var(--ink-muted); letter-spacing: 0.03em; margin-top: 0.15rem; font-style: italic; font-family: 'Cormorant Garamond', serif; }
+  .footer { margin-top: 1.6rem; padding-top: 1.2rem; border-top: 1px solid var(--ink-light); display: flex; align-items: center; gap: 1rem; }
+  .progress-count { font-size: 0.6rem; letter-spacing: 0.08em; color: var(--ink-muted); white-space: nowrap; }
+  .progress-count strong { color: var(--terracotta); font-weight: 400; }
+  .bar-wrap { flex: 1; height: 1px; background: var(--ink-light); position: relative; overflow: visible; }
+  .bar-fill { position: absolute; top: 0; left: 0; height: 1px; background: var(--terracotta); transition: width 0.4s ease; width: 0%; }
+  .bar-dot { position: absolute; top: 50%; transform: translate(-50%,-50%); width: 5px; height: 5px; background: var(--terracotta); border-radius: 50%; transition: left 0.4s ease; left: 0%; }
+  .reset-btn { background: none; border: 1px solid var(--ink-light); color: var(--ink-muted); font-family: 'IBM Plex Mono', monospace; font-size: 0.5rem; letter-spacing: 0.12em; padding: 0.28rem 0.55rem; cursor: pointer; border-radius: 1px; text-transform: uppercase; transition: all 0.18s; white-space: nowrap; }
+  .reset-btn:hover { border-color: rgba(26,24,20,0.25); color: var(--ink); }
+  @keyframes riseIn { to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <a class="back" href="../">← Daily Tools</a>
+  <div class="header">
+    <div class="eyebrow">Protocolo diario</div>
+    <h1 class="title">Un día<br><em>bien vivido</em></h1>
+    <p class="complete-msg">"He vivido; el curso que la Fortuna me fijó está cumplido." — Séneca</p>
+  </div>
+  <div id="list-container"></div>
+  <div class="footer">
+    <span class="progress-count"><strong id="count">0</strong> / 13</span>
+    <div class="bar-wrap">
+      <div class="bar-fill" id="barFill"></div>
+      <div class="bar-dot" id="barDot"></div>
+    </div>
+    <button class="reset-btn" onclick="resetAll()">Reiniciar</button>
+  </div>
+</div>
+<script>
+const phases = [
+  { label:"Mañana", dot:"morning", habits:[
+    { name:"Despertar", sub:"Luz solar · 3 respiraciones · intención del día", icon:"☀️" },
+    { name:"Agradecer", sub:"3 cosas concretas · activación parasimpática", icon:"🙏" },
+    { name:"Meditar", sub:"Premeditatio + ānāpānasati · 20-30 min", icon:"🧘" },
+    { name:"Ejercitar", sub:"Aeróbico · BDNF · keystone habit", icon:"🏃" },
+    { name:"Salir al exterior", sub:"Luz natural · naturaleza · regulación circadiana", icon:"🌿" },
+  ]},
+  { label:"Día", dot:"day", habits:[
+    { name:"Trabajar", sub:"Bloques de 90 min · deep work · ergon estoico", icon:"💼" },
+    { name:"Proyecto propio", sub:"Crear desde la identidad · prohairesis", icon:"🔧" },
+    { name:"Restaurar", sub:"NSDR · being mode · parar con intención", icon:"😮‍💨" },
+    { name:"Estudiar e investigar", sub:"Active recall · spaced repetition · prajñā", icon:"📖" },
+  ]},
+  { label:"Tarde · Noche", dot:"night", habits:[
+    { name:"Disfrutar conscientemente", sub:"Savoring · flow · muditā budista", icon:"❤️" },
+    { name:"Hablar con tu familia", sub:"Escucha profunda · oikeiōsis · oxitocina", icon:"📞" },
+    { name:"Revisar el día", sub:"Examen estoico · 3 cosas buenas · metta", icon:"🌙" },
+    { name:"Dormir temprano", sub:"7-9 hs · sistema glinfático · modo avión", icon:"🛌" },
+  ]}
+];
+const KEY = "rutina_v2";
+let state = JSON.parse(localStorage.getItem(KEY) || "{}");
+let globalIndex = 0;
+function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
+function updateProgress() {
+  const done = Object.values(state).filter(Boolean).length;
+  document.getElementById("count").textContent = done;
+  const pct = done / 13 * 100;
+  document.getElementById("barFill").style.width = pct + "%";
+  document.getElementById("barDot").style.left = pct + "%";
+  document.getElementById("card").classList.toggle("complete", done === 13);
+}
+function render() {
+  const container = document.getElementById("list-container");
+  container.innerHTML = "";
+  globalIndex = 0;
+  phases.forEach(phase => {
+    const div = document.createElement("div");
+    div.className = "phase";
+    div.innerHTML = `<div class="phase-label"><span class="phase-dot ${phase.dot}"></span>${phase.label}</div>`;
+    const ul = document.createElement("ul");
+    ul.className = "habits";
+    phase.habits.forEach(item => {
+      const idx = globalIndex++;
+      const li = document.createElement("li");
+      li.className = "habit" + (state[idx] ? " done" : "");
+      li.style.animationDelay = (idx * 0.035) + "s";
+      li.innerHTML = `<div class="check"><div class="check-mark"></div></div><span class="habit-icon">${item.icon}</span><div class="habit-text"><div class="habit-name">${item.name}</div><div class="habit-sub">${item.sub}</div></div>`;
+      li.addEventListener("click", () => { state[idx] = !state[idx]; li.classList.toggle("done", state[idx]); save(); updateProgress(); });
+      ul.appendChild(li);
+    });
+    div.appendChild(ul);
+    container.appendChild(div);
+  });
+  updateProgress();
+}
+function resetAll() { state = {}; save(); render(); }
+render();
+</script>
+</body>
+</html>
